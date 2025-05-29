@@ -5,11 +5,9 @@ IF DB_ID(''?'') > 4 -- Skip system databases
 BEGIN
     USE [?];
 
-    DECLARE @sql NVARCHAR(MAX) = '''';
-    DECLARE @dbname SYSNAME = DB_NAME();
-
-    SELECT @sql = @sql +
-        ''USE ['' + @dbname + '']; ALTER AUTHORIZATION ON SCHEMA::['' + s.name + ''] TO [dbo];'' + CHAR(13) + CHAR(10)
+    DECLARE @schema_name SYSNAME;
+    DECLARE cur CURSOR FOR
+    SELECT s.name
     FROM sys.schemas s
     JOIN sys.database_principals u ON s.principal_id = u.principal_id
     WHERE u.name NOT IN (
@@ -19,5 +17,15 @@ BEGIN
         ''db_denydatareader'', ''db_denydatawriter''
     );
 
-    PRINT @sql;
+    OPEN cur;
+    FETCH NEXT FROM cur INTO @schema_name;
+
+    WHILE @@FETCH_STATUS = 0
+    BEGIN
+        PRINT ''USE ['' + DB_NAME() + '']; ALTER AUTHORIZATION ON SCHEMA::['' + @schema_name + ''] TO [dbo];'';
+        FETCH NEXT FROM cur INTO @schema_name;
+    END
+
+    CLOSE cur;
+    DEALLOCATE cur;
 END';
