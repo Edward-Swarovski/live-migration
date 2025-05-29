@@ -21,7 +21,8 @@ BEGIN
     FROM sys.database_principals dp
     WHERE dp.name IN (
         ''NT SERVICE\MSSQLSERVER'',
-        ''NT SERVICE\SQLSERVERAGENT''
+        ''NT SERVICE\SQLSERVERAGENT'',
+        ''NT AUTHORITY\NETWORKR SERVICE''
     );
 
     SELECT @dropSQL AS DropStatements;
