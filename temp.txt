@@ -62,5 +62,32 @@ BEGIN
         ''db_denydatareader'', ''db_denydatawriter''
     );
 
-    SELECT @sql AS SQLStatement; -- ✅ safer than PRINT
+    SELECT @sql AS SQLStatement;
 END';
+
+
+USE [dbadb]; ALTER AUTHORIZATION ON SCHEMA::[dbtools_copydb] TO [dbo];
+
+
+USE [ODS]; ALTER AUTHORIZATION ON SCHEMA::[SRC_ICON] TO [dbo];
+USE [ODS]; ALTER AUTHORIZATION ON SCHEMA::[SRC_PERF] TO [dbo];
+USE [ODS]; ALTER AUTHORIZATION ON SCHEMA::[TGT_VARIOUS] TO [dbo];
+USE [ODS]; ALTER AUTHORIZATION ON SCHEMA::[ODS_DATA_PRE] TO [
+USE [CRIMS]; ALTER AUTHORIZATION ON SCHEMA::[db_datareader] TO [dbo];
+
+USE [ReportServer]; ALTER AUTHORIZATION ON SCHEMA::[RSExecRole] TO [dbo];
+
+USE [ReportServerCRIMS]; ALTER AUTHORIZATION ON SCHEMA::[RSExecRole] TO [dbo];
+
+USE [ReportServerCRIMSTempDB]; ALTER AUTHORIZATION ON SCHEMA::[RSExecRole] TO [dbo];
+
+USE [ReportServerODS]; ALTER AUTHORIZATION ON SCHEMA::[RSExecRole] TO [dbo];
+
+USE [ReportServerODSTempDB]; ALTER AUTHORIZATION ON SCHEMA::[RSExecRole] TO [dbo];
+
+
+
+USE [thinktransfer_nomura]; ALTER AUTHORIZATION ON SCHEMA::[thinkfolio_adm] TO [dbo];
+USE [thinktransfer_nomura]; ALTER AUTHORIZATION ON SCHEMA::[thinkfolio_user] TO [dbo];
+USE [thinktransfer_nomura]; ALTER AUTHORIZATION ON SCHEMA::[thinkfolio_svr] TO [d
+USE [ReportServerTempDB]; ALTER AUTHORIZATION ON SCHEMA::[RSExecRole] TO [dbo];
