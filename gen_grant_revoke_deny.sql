@@ -69,7 +69,4 @@ FROM sys.server_permissions perms
 INNER JOIN sys.server_principals grantor ON perms.grantor_principal_id = grantor.principal_id
 INNER JOIN sys.server_principals grantee ON perms.grantee_principal_id = grantee.principal_id
 WHERE perms.[type] = 'IM'
-    AND grantee.name NOT IN (SELECT LoginName FROM @ExcludedLogins)
-    AND grantee.name NOT LIKE '##%##'
-    AND grantee.name NOT LIKE 'NT %'
-    AND grantee.name NOT LIKE 'EUROPE\sys-MS%';
+    AND grantee.name NOT IN (SELECT LoginName FROM @ExcludedLogins);
