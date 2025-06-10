@@ -55,10 +55,6 @@ BEGIN
     INNER JOIN sys.server_principals Rle ON rm.role_principal_id = Rle.principal_id
     INNER JOIN sys.server_principals mbr ON rm.member_principal_id = mbr.principal_id
     WHERE mbr.name NOT IN (SELECT LoginName FROM @ExcludedLogins)
-        AND mbr.name NOT LIKE '##%##'
-        AND mbr.name NOT LIKE 'NT %'
-        AND mbr.name NOT LIKE 'EUROPE\sys-MS%'
-        AND mbr.name <> 'dbo'
         AND mbr.type <> 'R'
     ORDER BY rm.role_principal_id ASC;
 END
@@ -72,10 +68,6 @@ BEGIN
     INNER JOIN sys.server_principals Rle ON rm.role_principal_id = Rle.principal_id
     INNER JOIN sys.server_principals mbr ON rm.member_principal_id = mbr.principal_id
     WHERE mbr.name NOT IN (SELECT LoginName FROM @ExcludedLogins)
-        AND mbr.name NOT LIKE '##%##'
-        AND mbr.name NOT LIKE 'NT %'
-        AND mbr.name NOT LIKE 'EUROPE\sys-MS%'
-        AND mbr.name <> 'dbo'
         AND mbr.type <> 'R'
     ORDER BY rm.role_principal_id ASC;
 END
