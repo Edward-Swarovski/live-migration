@@ -3,7 +3,10 @@
 -- Enhanced Script: Generate Server Role Membership Scripts
 -- Purpose: Re-grant server role memberships with version-safe logic and exclusions
 ----------------------------------------------------------------------------------
-
+/*
+Usage: 
+sqlcmd -SSQL07350,2500 -U sa_maint -i gen_srv_roles_membership.sql  -o SQL07350_srv_roles_membership.out -h -1 -W -P `cat sa_maint.pwd`
+*/
 SET NOCOUNT ON;
 GO
 
