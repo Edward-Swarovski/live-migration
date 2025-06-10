@@ -71,9 +71,9 @@ FROM sys.server_permissions AS dp
 INNER JOIN sys.server_principals AS dpr ON dp.grantee_principal_id = dpr.principal_id
 LEFT JOIN sys.endpoints AS ep ON dp.class_desc = 'ENDPOINT' AND dp.major_id = ep.endpoint_id
 WHERE dp.[type] IS NOT NULL
-    AND dpr.name NOT IN (SELECT LoginName FROM @ExcludedLogins);
---    AND dpr.name NOT LIKE '##%##'
---    AND dpr.name NOT LIKE 'NT %'
+    AND dpr.name NOT IN (SELECT LoginName FROM @ExcludedLogins)
+    AND dpr.name NOT LIKE '##%##'
+    AND dpr.name NOT LIKE 'NT %';
 --    AND dpr.name NOT LIKE 'EUROPE\sys-MS%';
 
 -- 3. Impersonate Permissions ('IM' Type)
@@ -87,7 +87,7 @@ FROM sys.server_permissions perms
 INNER JOIN sys.server_principals grantor ON perms.grantor_principal_id = grantor.principal_id
 INNER JOIN sys.server_principals grantee ON perms.grantee_principal_id = grantee.principal_id
 WHERE perms.[type] = 'IM'
-    AND grantee.name NOT IN (SELECT LoginName FROM @ExcludedLogins);
---    AND grantee.name NOT LIKE '##%##'
---    AND grantee.name NOT LIKE 'NT %'
+    AND grantee.name NOT IN (SELECT LoginName FROM @ExcludedLogins)
+    AND grantee.name NOT LIKE '##%##'
+    AND grantee.name NOT LIKE 'NT %';
 --    AND grantee.name NOT LIKE 'EUROPE\sys-MS%';
