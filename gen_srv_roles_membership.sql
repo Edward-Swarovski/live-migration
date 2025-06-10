@@ -2,8 +2,8 @@
 ----------------------------------------------------------------------------------
 -- Enhanced Script: Generate Server Role Membership Scripts
 -- Purpose: Re-grant server role memberships with version-safe logic and exclusions
--- Maintainer: ChatGPT - Enhanced for clarity and maintainability
 ----------------------------------------------------------------------------------
+
 SET NOCOUNT ON;
 GO
 
@@ -11,15 +11,34 @@ GO
 DECLARE @ExcludedLogins TABLE (LoginName SYSNAME);
 INSERT INTO @ExcludedLogins(LoginName)
 VALUES 
-    ('sa'), ('hp_dbspi'), ('dbadb_dbo'), 
-    ('PRODUCTION\DbSysadminAll-Acc-G'), ('EUROPE\sys-dbaautosys-eu'),
-    ('EUROPE\DBEngineering-ACC-GL'), ('EUROPE\DBSysadminAll-ACC-LON'),
-    ('EUROPE\DBSysAdminAP-ACC-LON'), ('EUROPE\DBSysadminMUM-ACC-LON'),
-    ('dbtools_copydb'), ('dbtools_restoredb'), ('mdscout'), 
-    ('ASIAPAC\IN_AIMS_SQL_W'), ('public'), ('guest'),
-    ('UK\LU SQL CA - Local Database Administrators'),
-    ('UK\LU SQL CA - Remote Database Administrators'),
-    ('NT AUTHORITY\SYSTEM');
+    ('##MS_PolicyEventProcessingLogin##'),
+    ('##MS_PolicyTsqlExecutionLogin##'),
+    ('a2pdba'),
+    ('a2psysro'),
+    ('BUILTIN\Administrators'),
+    ('dbadb_dbo'),
+    ('dbmsmon'),
+    ('dbtools_copydb'),
+    ('dbtools_restoredb'),
+    ('dbtoolsp'),
+    ('delphix_admin'),
+    ('hp_dbspi'),
+    ('infosec'),
+    ('IT_SEC_ADMIN'),
+    ('mdscout'),
+    ('NT AUTHORITY\NETWORK SERVICE'),
+    ('NT AUTHORITY\SYSTEM'),
+    ('NT SERVICE\MSSQLSERVER'),
+    ('NT SERVICE\SQLSERVERAGENT'),
+    ('NT SERVICE\SQLTELEMETRY'),
+    ('NT SERVICE\SQLWriter'),
+    ('NT SERVICE\Winmgmt'),
+    ('PRODUCTION\DBSysAdminAll-ACC-G'),
+    ('PRODUCTION\sys-a2pdba1-g'),
+    ('PRODUCTION\sys-a2pdba2-g'),
+    ('QUALYS_DB'),
+    ('sa'),
+    ('sa_maint');
 
 ----------------------------------------------------------------------------------
 -- 2. Conditional Version Handling: Use ALTER SERVER ROLE or sp_addrolemember
