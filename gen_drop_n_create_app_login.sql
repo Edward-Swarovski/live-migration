@@ -100,8 +100,7 @@ AND name NOT IN (
 -- Generate drop and recreate login statements
 SELECT 
     'BEGIN TRY ' +
-        'IF EXISTS (SELECT * FROM sys.server_principals WHERE name = ''' + LoginName + ''') ' +
-        'DROP LOGIN [' + LoginName + ']; ' +
+        'BEGIN TRY DROP LOGIN [' + LoginName + ']; END TRY BEGIN CATCH PRINT ''Login [' + LoginName + '] did not exist, skipping drop.''; END CATCH ' +
         CASE 
             WHEN TypeDesc = 'SQL_LOGIN' THEN 
                 'CREATE LOGIN [' + LoginName + '] ' +
