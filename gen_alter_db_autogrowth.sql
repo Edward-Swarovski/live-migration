@@ -8,13 +8,13 @@ SELECT
     CASE 
         WHEN mf.is_percent_growth = 1 
             THEN CAST(mf.growth AS VARCHAR(10)) + '%' 
-        ELSE CAST(mf.growth * 8 / 1024 AS VARCHAR(10)) + 'MB' 
+        ELSE CAST(CAST(mf.growth AS BIGINT) * 8 / 1024 AS VARCHAR(20)) + 'MB' 
     END + 
-    ISNULL(', MAXSIZE = ' + 
-        CASE 
-            WHEN mf.max_size = -1 THEN 'UNLIMITED'
-            ELSE CAST(mf.max_size * 8 / 1024 AS VARCHAR(10)) + 'MB'
-        END, '') + 
+    ', MAXSIZE = ' +
+    CASE 
+        WHEN mf.max_size IN (-1, 268435456) THEN 'UNLIMITED'
+        ELSE CAST(CAST(mf.max_size AS BIGINT) * 8 / 1024 AS VARCHAR(20)) + 'MB'
+    END + 
     ');' AS [ALTER STATEMENT]
 FROM 
     sys.master_files mf
