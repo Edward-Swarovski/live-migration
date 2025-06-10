@@ -1,129 +1,28 @@
-sqlcmd -SSQL06569,2500 -U sa_maint -i gen_chg_schema_owner_to_dbo.sql -w9999  -o SQL06569_chg_schema_owner_to_dbo.sql -h -1 -W -P `cat sa_maint.pwd`
-bash-4.4$ cat SQL06569_chg_schema_owner_to_dbo.sql
-USE [dbadb]; ALTER AUTHORIZATION ON SCHEMA::[dbtools_copydb] TO [dbo];
-
-
-USE [ODS]; ALTER AUTHORIZATION ON SCHEMA::[SRC_ICON] TO [dbo];
-USE [ODS]; ALTER AUTHORIZATION ON SCHEMA::[SRC_PERF] TO [dbo];
-USE [ODS]; ALTER AUTHORIZATION ON SCHEMA::[TGT_VARIOUS] TO [dbo];
-USE [ODS]; ALTER AUTHORIZATION ON SCHEMA::[ODS_DATA_PRE] TO [dbo];
-USE [ODS]; ALTER AUTHORIZATION ON SCHEMA::[SRC_XENOS] TO [dbo];
-USE [ODS]; ALTER AUTHORIZATION ON SCHEMA::[ODS_EDM] TO [dbo];
-USE [ODS]; ALTER AUTHORIZATION ON SCHEMA::[ODS_DATA] TO [dbo];
-USE [ODS]; ALTER AUTHORIZATION ON SCHEMA::[ODS_IT] TO [dbo];
-USE [ODS]; ALTER AUTHORIZATION ON SCHEMA::[TGT_PORTAL] TO [dbo];
-USE [ODS]; ALTER AUTHORIZATION ON SCHEMA::[SRC_BBG] TO [dbo];
-USE [ODS]; ALTER AUTHORIZATION ON SCHEMA::[BACKUP] TO [dbo];
-USE [ODS]; ALTER AUTHORIZATION ON SCHEMA::[XENOS] TO [dbo];
-USE [ODS]; ALTER AUTHORIZATION ON SCHEMA::[SRC_SER] TO [dbo];
-USE [ODS]; ALTER AUTHORIZATION ON SCHEMA::[ARCHIVE] TO [dbo];
-USE [ODS]; ALTER AUTHORIZATION ON SCHEMA::[LOGGING] TO [dbo];
-USE [ODS]; A
-USE [CRIMS]; ALTER AUTHORIZATION ON SCHEMA::[db_datareader] TO [dbo];
-
-USE [ReportServer]; ALTER AUTHORIZATION ON SCHEMA::[RSExecRole] TO [dbo];
-
-USE [ReportServerCRIMS]; ALTER AUTHORIZATION ON SCHEMA::[RSExecRole] TO [dbo];
-
-USE [ReportServerCRIMSTempDB]; ALTER AUTHORIZATION ON SCHEMA::[RSExecRole] TO [dbo];
-
-USE [ReportServerODS]; ALTER AUTHORIZATION ON SCHEMA::[RSExecRole] TO [dbo];
-
-USE [ReportServerODSTempDB]; ALTER AUTHORIZATION ON SCHEMA::[RSExecRole] TO [dbo];
-
-
-
-USE [thinktransfer_nomura]; ALTER AUTHORIZATION ON SCHEMA::[thinkfolio_adm] TO [dbo];
-USE [thinktransfer_nomura]; ALTER AUTHORIZATION ON SCHEMA::[thinkfolio_user] TO [dbo];
-USE [thinktransfer_nomura]; ALTER AUTHORIZATION ON SCHEMA::[thinkfolio_svr] TO [dbo];
-
-USE [ReportServerTempDB]; ALTER AUTHORIZATION ON SCHEMA::[RSExecRole] TO [dbo];
-
-
-
-SET NOCOUNT ON;
-
-EXEC sp_MSforeachdb N'
-IF DB_ID(''?'') > 4 -- Skip system databases
-BEGIN
-    USE [?];
-
-    DECLARE @sql NVARCHAR(MAX) = '''';
-    DECLARE @dbname SYSNAME = DB_NAME();
-
-    SELECT @sql = @sql +
-        ''USE ['' + @dbname + '']; ALTER AUTHORIZATION ON SCHEMA::['' + s.name + ''] TO [dbo];'' + CHAR(13) + CHAR(10)
-    FROM sys.schemas s
-    JOIN sys.database_principals u ON s.principal_id = u.principal_id
-    WHERE u.name NOT IN (
-        ''dbo'', ''guest'', ''INFORMATION_SCHEMA'', ''sys'',
-        ''db_owner'', ''db_accessadmin'', ''db_securityadmin'', ''db_ddladmin'',
-        ''db_backupoperator'', ''db_datareader'', ''db_datawriter'',
-        ''db_denydatareader'', ''db_denydatawriter''
-    );
-
-    SELECT @sql AS SQLStatement;
-END';
-
-
-USE [dbadb]; ALTER AUTHORIZATION ON SCHEMA::[dbtools_copydb] TO [dbo];
-
-
-USE [ODS]; ALTER AUTHORIZATION ON SCHEMA::[SRC_ICON] TO [dbo];
-USE [ODS]; ALTER AUTHORIZATION ON SCHEMA::[SRC_PERF] TO [dbo];
-USE [ODS]; ALTER AUTHORIZATION ON SCHEMA::[TGT_VARIOUS] TO [dbo];
-USE [ODS]; ALTER AUTHORIZATION ON SCHEMA::[ODS_DATA_PRE] TO [
-USE [CRIMS]; ALTER AUTHORIZATION ON SCHEMA::[db_datareader] TO [dbo];
-
-USE [ReportServer]; ALTER AUTHORIZATION ON SCHEMA::[RSExecRole] TO [dbo];
-
-USE [ReportServerCRIMS]; ALTER AUTHORIZATION ON SCHEMA::[RSExecRole] TO [dbo];
-
-USE [ReportServerCRIMSTempDB]; ALTER AUTHORIZATION ON SCHEMA::[RSExecRole] TO [dbo];
-
-USE [ReportServerODS]; ALTER AUTHORIZATION ON SCHEMA::[RSExecRole] TO [dbo];
-
-USE [ReportServerODSTempDB]; ALTER AUTHORIZATION ON SCHEMA::[RSExecRole] TO [dbo];
-
-
-
-USE [thinktransfer_nomura]; ALTER AUTHORIZATION ON SCHEMA::[thinkfolio_adm] TO [dbo];
-USE [thinktransfer_nomura]; ALTER AUTHORIZATION ON SCHEMA::[thinkfolio_user] TO [dbo];
-USE [thinktransfer_nomura]; ALTER AUTHORIZATION ON SCHEMA::[thinkfolio_svr] TO [d
-USE [ReportServerTempDB]; ALTER AUTHORIZATION ON SCHEMA::[RSExecRole] TO [dbo];
-
-
-
-
-SET NOCOUNT ON;
-
-EXEC sp_MSforeachdb N'
-IF DB_ID(''?'') > 4 -- Skip system databases
-BEGIN
-    USE [?];
-
-    DECLARE @schema_name SYSNAME;
-    DECLARE cur CURSOR FOR
-    SELECT s.name
-    FROM sys.schemas s
-    JOIN sys.database_principals u ON s.principal_id = u.principal_id
-    WHERE u.name NOT IN (
-        ''dbo'', ''guest'', ''INFORMATION_SCHEMA'', ''sys'',
-        ''db_owner'', ''db_accessadmin'', ''db_securityadmin'', ''db_ddladmin'',
-        ''db_backupoperator'', ''db_datareader'', ''db_datawriter'',
-        ''db_denydatareader'', ''db_denydatawriter''
-    );
-
-    OPEN cur;
-    FETCH NEXT FROM cur INTO @schema_name;
-
-    WHILE @@FETCH_STATUS = 0
-    BEGIN
-        PRINT ''USE ['' + DB_NAME() + '']; ALTER AUTHORIZATION ON SCHEMA::['' + @schema_name + ''] TO [dbo];'';
-        FETCH NEXT FROM cur INTO @schema_name;
-    END
-
-    CLOSE cur;
-    DEALLOCATE cur;
-END';
-
+##MS_PolicyEventProcessingLogin##
+##MS_PolicyTsqlExecutionLogin##
+a2pdba
+a2psysro
+BUILTIN\Administrators
+dbadb_dbo
+dbmsmon
+dbtools_copydb
+dbtools_restoredb
+dbtoolsp
+delphix_admin
+hp_dbspi
+infosec
+IT_SEC_ADMIN
+mdscout
+NT AUTHORITY\NETWORK SERVICE
+NT AUTHORITY\SYSTEM
+NT SERVICE\MSSQLSERVER
+NT SERVICE\SQLSERVERAGENT
+NT SERVICE\SQLTELEMETRY
+NT SERVICE\SQLWriter
+NT SERVICE\Winmgmt
+PRODUCTION\DBSysAdminAll-ACC-G
+PRODUCTION\sys-a2pdba1-g
+PRODUCTION\sys-a2pdba2-g
+QUALYS_DB
+sa
+sa_maint
