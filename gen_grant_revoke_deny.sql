@@ -51,17 +51,30 @@ SELECT
     'BEGIN TRY ' + 
     CASE 
         WHEN dp.state_desc = 'GRANT_WITH_GRANT_OPTION' THEN 
-            'GRANT ' + dp.permission_name COLLATE DATABASE_DEFAULT + ' TO [' + dpr.name + '] WITH GRANT OPTION'
+            'GRANT ' + dp.permission_name COLLATE DATABASE_DEFAULT + 
+            CASE 
+                WHEN dp.class_desc = 'SERVER' THEN ' TO [' + dpr.name + '] WITH GRANT OPTION'
+                WHEN dp.class_desc = 'ENDPOINT' THEN ' ON ENDPOINT::[' + ep.name + '] TO [' + dpr.name + '] WITH GRANT OPTION'
+                ELSE ' -- Unsupported class: ' + dp.class_desc
+            END
         ELSE 
-            dp.state_desc + ' ' + dp.permission_name COLLATE DATABASE_DEFAULT + ' TO [' + dpr.name + ']'
+            dp.state_desc + ' ' + dp.permission_name COLLATE DATABASE_DEFAULT + 
+            CASE 
+                WHEN dp.class_desc = 'SERVER' THEN ' TO [' + dpr.name + ']'
+                WHEN dp.class_desc = 'ENDPOINT' THEN ' ON ENDPOINT::[' + ep.name + '] TO [' + dpr.name + ']'
+                ELSE ' -- Unsupported class: ' + dp.class_desc
+            END
     END + '; ' +
-    'END TRY BEGIN CATCH PRINT ''*Warning: unable to ' + dp.state_desc + ' ' + 
-    dp.permission_name COLLATE DATABASE_DEFAULT + ' to [' + dpr.name + '] '' + ERROR_MESSAGE(); END CATCH' 
+    'END TRY BEGIN CATCH PRINT ''*Warning: unable to apply permission to [' + dpr.name + ']'' + ERROR_MESSAGE(); END CATCH'
     AS GrantScript
 FROM sys.server_permissions AS dp
 INNER JOIN sys.server_principals AS dpr ON dp.grantee_principal_id = dpr.principal_id
-WHERE dp.[type] <> 'IM'
+LEFT JOIN sys.endpoints AS ep ON dp.class_desc = 'ENDPOINT' AND dp.major_id = ep.endpoint_id
+WHERE dp.[type] IS NOT NULL
     AND dpr.name NOT IN (SELECT LoginName FROM @ExcludedLogins);
+--    AND dpr.name NOT LIKE '##%##'
+--    AND dpr.name NOT LIKE 'NT %'
+--    AND dpr.name NOT LIKE 'EUROPE\sys-MS%';
 
 -- 3. Impersonate Permissions ('IM' Type)
 SELECT 
@@ -75,3 +88,6 @@ INNER JOIN sys.server_principals grantor ON perms.grantor_principal_id = grantor
 INNER JOIN sys.server_principals grantee ON perms.grantee_principal_id = grantee.principal_id
 WHERE perms.[type] = 'IM'
     AND grantee.name NOT IN (SELECT LoginName FROM @ExcludedLogins);
+--    AND grantee.name NOT LIKE '##%##'
+--    AND grantee.name NOT LIKE 'NT %'
+--    AND grantee.name NOT LIKE 'EUROPE\sys-MS%';
