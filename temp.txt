@@ -5,3 +5,14 @@ C:\Users\sys-dbanp1-g>sqlcmd -A -S eun048768,2500 -U sa_maint
 Password: Sqlcmd: Error: Microsoft ODBC Driver 17 for SQL Server : SQL Server Network Interfaces: Connection string is not valid [87]. .
 Sqlcmd: Error: Microsoft ODBC Driver 17 for SQL Server : Login timeout expired.
 Sqlcmd: Error: Microsoft ODBC Driver 17 for SQL Server : A network-related or instance-specific error has occurred while establishing a connection to SQL Server. Server is not found or not accessible. Check if instance name is correct and if SQL Server is configured to allow remote connections. For more information see SQL Server Books Online..
+
+SELECT name, type_desc, state_desc, protocol_desc, port, ip_address 
+FROM sys.tcp_endpoints
+
+name                                                                                                                             type_desc                                                    state_desc                                                   protocol_desc                                                port        ip_address
+-------------------------------------------------------------------------------------------------------------------------------- ------------------------------------------------------------ ------------------------------------------------------------ ------------------------------------------------------------ ----------- ---------------------------------------------
+Dedicated Admin Connection                                                                                                       TSQL                                                         STARTED                                                      TCP                                                          0           NULL
+TSQL Default TCP                                                                                                                 TSQL                                                         STARTED                                                      TCP                                                          0           NULL
+
+
+Completion time: 2025-06-10T18:07:31.3010074+01:00
