@@ -1,59 +1,7 @@
-BEGIN TRY GRANT VIEW ANY DATABASE TO [public]; END TRY BEGIN CATCH PRINT '*Warning: unable to GRANT VIEW ANY DATABASE to [public] ' + ERROR_MESSAGE(); END CATCH
-BEGIN TRY GRANT VIEW ANY DEFINITION TO [##MS_SQLResourceSigningCertificate##]; END TRY BEGIN CATCH PRINT '*Warning: unable to GRANT VIEW ANY DEFINITION to [##MS_SQLResourceSigningCertificate##] ' + ERROR_MESSAGE(); END CATCH
-BEGIN TRY GRANT AUTHENTICATE SERVER TO [##MS_SQLReplicationSigningCertificate##]; END TRY BEGIN CATCH PRINT '*Warning: unable to GRANT AUTHENTICATE SERVER to [##MS_SQLReplicationSigningCertificate##] ' + ERROR_MESSAGE(); END CATCH
-BEGIN TRY GRANT VIEW ANY DEFINITION TO [##MS_SQLReplicationSigningCertificate##]; END TRY BEGIN CATCH PRINT '*Warning: unable to GRANT VIEW ANY DEFINITION to [##MS_SQLReplicationSigningCertificate##] ' + ERROR_MESSAGE(); END CATCH
-BEGIN TRY GRANT VIEW SERVER STATE TO [##MS_SQLReplicationSigningCertificate##]; END TRY BEGIN CATCH PRINT '*Warning: unable to GRANT VIEW SERVER STATE to [##MS_SQLReplicationSigningCertificate##] ' + ERROR_MESSAGE(); END CATCH
-BEGIN TRY GRANT AUTHENTICATE SERVER TO [##MS_SQLAuthenticatorCertificate##]; END TRY BEGIN CATCH PRINT '*Warning: unable to GRANT AUTHENTICATE SERVER to [##MS_SQLAuthenticatorCertificate##] ' + ERROR_MESSAGE(); END CATCH
-BEGIN TRY GRANT CONTROL SERVER TO [##MS_PolicySigningCertificate##]; END TRY BEGIN CATCH PRINT '*Warning: unable to GRANT CONTROL SERVER to [##MS_PolicySigningCertificate##] ' + ERROR_MESSAGE(); END CATCH
-BEGIN TRY GRANT VIEW ANY DEFINITION TO [##MS_PolicySigningCertificate##]; END TRY BEGIN CATCH PRINT '*Warning: unable to GRANT VIEW ANY DEFINITION to [##MS_PolicySigningCertificate##] ' + ERROR_MESSAGE(); END CATCH
-BEGIN TRY GRANT VIEW ANY DEFINITION TO [##MS_SmoExtendedSigningCertificate##]; END TRY BEGIN CATCH PRINT '*Warning: unable to GRANT VIEW ANY DEFINITION to [##MS_SmoExtendedSigningCertificate##] ' + ERROR_MESSAGE(); END CATCH
-BEGIN TRY GRANT CONNECT SQL TO [EUROPE\sys-SQL07350-eu]; END TRY BEGIN CATCH PRINT '*Warning: unable to GRANT CONNECT SQL to [EUROPE\sys-SQL07350-eu] ' + ERROR_MESSAGE(); END CATCH
-BEGIN TRY GRANT CONNECT SQL TO [EUROPE\sys-dbaautosys-eu]; END TRY BEGIN CATCH PRINT '*Warning: unable to GRANT CONNECT SQL to [EUROPE\sys-dbaautosys-eu] ' + ERROR_MESSAGE(); END CATCH
-BEGIN TRY GRANT CONNECT SQL TO [EUROPE\DBEngineering-ACC-GL]; END TRY BEGIN CATCH PRINT '*Warning: unable to GRANT CONNECT SQL to [EUROPE\DBEngineering-ACC-GL] ' + ERROR_MESSAGE(); END CATCH
-BEGIN TRY GRANT CONNECT SQL TO [##MS_AgentSigningCertificate##]; END TRY BEGIN CATCH PRINT '*Warning: unable to GRANT CONNECT SQL to [##MS_AgentSigningCertificate##] ' + ERROR_MESSAGE(); END CATCH
-BEGIN TRY GRANT CONNECT SQL TO [EUROPE\sys-ssrsnonprod-eu]; END TRY BEGIN CATCH PRINT '*Warning: unable to GRANT CONNECT SQL to [EUROPE\sys-ssrsnonprod-eu] ' + ERROR_MESSAGE(); END CATCH
-BEGIN TRY GRANT CONNECT SQL TO [sqlEaPrd]; END TRY BEGIN CATCH PRINT '*Warning: unable to GRANT CONNECT SQL to [sqlEaPrd] ' + ERROR_MESSAGE(); END CATCH
-BEGIN TRY GRANT CONNECT SQL TO [sys-ssisnonprod-eu]; END TRY BEGIN CATCH PRINT '*Warning: unable to GRANT CONNECT SQL to [sys-ssisnonprod-eu] ' + ERROR_MESSAGE(); END CATCH
-BEGIN TRY GRANT CONNECT SQL TO [EUROPE\sys-ssisnonprod-eu]; END TRY BEGIN CATCH PRINT '*Warning: unable to GRANT CONNECT SQL to [EUROPE\sys-ssisnonprod-eu] ' + ERROR_MESSAGE(); END CATCH
-BEGIN TRY GRANT CONNECT SQL TO [CRFE]; END TRY BEGIN CATCH PRINT '*Warning: unable to GRANT CONNECT SQL to [CRFE] ' + ERROR_MESSAGE(); END CATCH
-BEGIN TRY GRANT CONNECT SQL TO [sqlODS]; END TRY BEGIN CATCH PRINT '*Warning: unable to GRANT CONNECT SQL to [sqlODS] ' + ERROR_MESSAGE(); END CATCH
-BEGIN TRY GRANT CONNECT SQL TO [sqlCRIMS]; END TRY BEGIN CATCH PRINT '*Warning: unable to GRANT CONNECT SQL to [sqlCRIMS] ' + ERROR_MESSAGE(); END CATCH
-BEGIN TRY GRANT CONNECT SQL TO [EUROPE\sys-ssisprod-eu]; END TRY BEGIN CATCH PRINT '*Warning: unable to GRANT CONNECT SQL to [EUROPE\sys-ssisprod-eu] ' + ERROR_MESSAGE(); END CATCH
-BEGIN TRY GRANT CONNECT SQL TO [test_nam_user]; END TRY BEGIN CATCH PRINT '*Warning: unable to GRANT CONNECT SQL to [test_nam_user] ' + ERROR_MESSAGE(); END CATCH
-BEGIN TRY GRANT CREATE TRACE EVENT NOTIFICATION TO [test_nam_user] WITH GRANT OPTION; END TRY BEGIN CATCH PRINT '*Warning: unable to GRANT_WITH_GRANT_OPTION CREATE TRACE EVENT NOTIFICATION to [test_nam_user] ' + ERROR_MESSAGE(); END CATCH
-BEGIN TRY GRANT CONNECT TO [public]; END TRY BEGIN CATCH PRINT '*Warning: unable to GRANT CONNECT to [public] ' + ERROR_MESSAGE(); END CATCH
-BEGIN TRY GRANT CONNECT TO [public]; END TRY BEGIN CATCH PRINT '*Warning: unable to GRANT CONNECT to [public] ' + ERROR_MESSAGE(); END CATCH
-BEGIN TRY GRANT CONNECT TO [public]; END TRY BEGIN CATCH PRINT '*Warning: unable to GRANT CONNECT to [public] ' + ERROR_MESSAGE(); END CATCH
-BEGIN TRY GRANT CONNECT TO [public]; END TRY BEGIN CATCH PRINT '*Warning: unable to GRANT CONNECT to [public] ' + ERROR_MESSAGE(); END CATCH
+C:\Users\sys-dbanp1-g>hostname
+eun048768
 
-SELECT 
-    dpr.name, dp.permission_name, dp.state_desc, dp.class_desc, dp.major_id
-FROM sys.server_permissions dp
-JOIN sys.server_principals dpr ON dp.grantee_principal_id = dpr.principal_id
-WHERE dpr.name = 'public'
-
-name                                                                                                                             permission_name                                                                                                                  state_desc                                                   class_desc                                                   major_id
--------------------------------------------------------------------------------------------------------------------------------- -------------------------------------------------------------------------------------------------------------------------------- ------------------------------------------------------------ ------------------------------------------------------------ -----------
-public                                                                                                                           VIEW ANY DATABASE                                                                                                                GRANT                                                        SERVER                                                       0
-public                                                                                                                           CONNECT                                                                                                                          GRANT                                                        ENDPOINT                                                     2
-public                                                                                                                           CONNECT                                                                                                                          GRANT                                                        ENDPOINT                                                     3
-public                                                                                                                           CONNECT                                                                                                                          GRANT                                                        ENDPOINT                                                     4
-public                                                                                                                           CONNECT                                                                                                                          GRANT                                                        ENDPOINT                                                     5
-
-BEGIN TRY GRANT VIEW ANY DATABASE TO [public]; END TRY BEGIN CATCH PRINT '*Warning: unable to apply permission to [public]' + ERROR_MESSAGE(); END CATCH
-BEGIN TRY GRANT VIEW ANY DEFINITION TO [##MS_SQLResourceSigningCertificate##]; END TRY BEGIN CATCH PRINT '*Warning: unable to apply permission to [##MS_SQLResourceSigningCertificate##]' + ERROR_MESSAGE(); END CATCH
-BEGIN TRY GRANT AUTHENTICATE SERVER TO [##MS_SQLReplicationSigningCertificate##]; END TRY BEGIN CATCH PRINT '*Warning: unable to apply permission to [##MS_SQLReplicationSigningCertificate##]' + ERROR_MESSAGE(); END CATCH
-BEGIN TRY GRANT VIEW ANY DEFINITION TO [##MS_SQLReplicationSigningCertificate##]; END TRY BEGIN CATCH PRINT '*Warning: unable to apply permission to [##MS_SQLReplicationSigningCertificate##]' + ERROR_MESSAGE(); END CATCH
-BEGIN TRY GRANT VIEW SERVER STATE TO [##MS_SQLReplicationSigningCertificate##]; END TRY BEGIN CATCH PRINT '*Warning: unable to apply permission to [##MS_SQLReplicationSigningCertificate##]' + ERROR_MESSAGE(); END CATCH
-BEGIN TRY GRANT AUTHENTICATE SERVER TO [##MS_SQLAuthenticatorCertificate##]; END TRY BEGIN CATCH PRINT '*Warning: unable to apply permission to [##MS_SQLAuthenticatorCertificate##]' + ERROR_MESSAGE(); END CATCH
-BEGIN TRY GRANT CONTROL SERVER TO [##MS_PolicySigningCertificate##]; END TRY BEGIN CATCH PRINT '*Warning: unable to apply permission to [##MS_PolicySigningCertificate##]' + ERROR_MESSAGE(); END CATCH
-BEGIN TRY GRANT VIEW ANY DEFINITION TO [##MS_PolicySigningCertificate##]; END TRY BEGIN CATCH PRINT '*Warning: unable to apply permission to [##MS_PolicySigningCertificate##]' + ERROR_MESSAGE(); END CATCH
-BEGIN TRY GRANT VIEW ANY DEFINITION TO [##MS_SmoExtendedSigningCertificate##]; END TRY BEGIN CATCH PRINT '*Warning: unable to apply permission to [##MS_SmoExtendedSigningCertificate##]' + ERROR_MESSAGE(); END CATCH
-BEGIN TRY GRANT CONNECT SQL TO [##MS_AgentSigningCertificate##]; END TRY BEGIN CATCH PRINT '*Warning: unable to apply permission to [##MS_AgentSigningCertificate##]' + ERROR_MESSAGE(); END CATCH
-BEGIN TRY GRANT CONNECT SQL TO [PRODUCTION\sys-dbanp2-g]; END TRY BEGIN CATCH PRINT '*Warning: unable to apply permission to [PRODUCTION\sys-dbanp2-g]' + ERROR_MESSAGE(); END CATCH
-BEGIN TRY GRANT CONNECT SQL TO [PRODUCTION\sys-dbanp1-g]; END TRY BEGIN CATCH PRINT '*Warning: unable to apply permission to [PRODUCTION\sys-dbanp1-g]' + ERROR_MESSAGE(); END CATCH
-BEGIN TRY GRANT CONNECT SQL TO [sqlVoting]; END TRY BEGIN CATCH PRINT '*Warning: unable to apply permission to [sqlVoting]' + ERROR_MESSAGE(); END CATCH
-BEGIN TRY GRANT CONNECT ON ENDPOINT::[TSQL Local Machine] TO [public]; END TRY BEGIN CATCH PRINT '*Warning: unable to apply permission to [public]' + ERROR_MESSAGE(); END CATCH
-BEGIN TRY GRANT CONNECT ON ENDPOINT::[TSQL Named Pipes] TO [public]; END TRY BEGIN CATCH PRINT '*Warning: unable to apply permission to [public]' + ERROR_MESSAGE(); END CATCH
-BEGIN TRY GRANT CONNECT ON ENDPOINT::[TSQL Default TCP] TO [public]; END TRY BEGIN CATCH PRINT '*Warning: unable to apply permission to [public]' + ERROR_MESSAGE(); END CATCH
-BEGIN TRY GRANT CONNECT ON ENDPOINT::[TSQL Default VIA] TO [public]; END TRY BEGIN CATCH PRINT '*Warning: unable to apply permission to [public]' + ERROR_MESSAGE(); END CATCH
+C:\Users\sys-dbanp1-g>sqlcmd -A -S eun048768,2500 -U sa_maint
+Password: Sqlcmd: Error: Microsoft ODBC Driver 17 for SQL Server : SQL Server Network Interfaces: Connection string is not valid [87]. .
+Sqlcmd: Error: Microsoft ODBC Driver 17 for SQL Server : Login timeout expired.
+Sqlcmd: Error: Microsoft ODBC Driver 17 for SQL Server : A network-related or instance-specific error has occurred while establishing a connection to SQL Server. Server is not found or not accessible. Check if instance name is correct and if SQL Server is configured to allow remote connections. For more information see SQL Server Books Online..
