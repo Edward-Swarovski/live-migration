@@ -25,3 +25,10 @@ BEGIN TRY GRANT CONNECT TO [public]; END TRY BEGIN CATCH PRINT '*Warning: unable
 BEGIN TRY GRANT CONNECT TO [public]; END TRY BEGIN CATCH PRINT '*Warning: unable to GRANT CONNECT to [public] ' + ERROR_MESSAGE(); END CATCH
 BEGIN TRY GRANT CONNECT TO [public]; END TRY BEGIN CATCH PRINT '*Warning: unable to GRANT CONNECT to [public] ' + ERROR_MESSAGE(); END CATCH
 BEGIN TRY GRANT CONNECT TO [public]; END TRY BEGIN CATCH PRINT '*Warning: unable to GRANT CONNECT to [public] ' + ERROR_MESSAGE(); END CATCH
+
+SELECT 
+    dpr.name, dp.permission_name, dp.state_desc, dp.class_desc, dp.major_id
+FROM sys.server_permissions dp
+JOIN sys.server_principals dpr ON dp.grantee_principal_id = dpr.principal_id
+WHERE dpr.name = 'public'
+
