@@ -46,9 +46,15 @@ VALUES
     ('sa_maint');
 
 -- 2. General Server Permissions (excluding 'IM')
+
 SELECT 
-    'BEGIN TRY ' + dp.state_desc + ' ' + dp.permission_name COLLATE DATABASE_DEFAULT + 
-    ' TO [' + dpr.name + ']; ' +
+    'BEGIN TRY ' + 
+    CASE 
+        WHEN dp.state_desc = 'GRANT_WITH_GRANT_OPTION' THEN 
+            'GRANT ' + dp.permission_name COLLATE DATABASE_DEFAULT + ' TO [' + dpr.name + '] WITH GRANT OPTION'
+        ELSE 
+            dp.state_desc + ' ' + dp.permission_name COLLATE DATABASE_DEFAULT + ' TO [' + dpr.name + ']'
+    END + '; ' +
     'END TRY BEGIN CATCH PRINT ''*Warning: unable to ' + dp.state_desc + ' ' + 
     dp.permission_name COLLATE DATABASE_DEFAULT + ' to [' + dpr.name + '] '' + ERROR_MESSAGE(); END CATCH' 
     AS GrantScript
@@ -56,7 +62,6 @@ FROM sys.server_permissions AS dp
 INNER JOIN sys.server_principals AS dpr ON dp.grantee_principal_id = dpr.principal_id
 WHERE dp.[type] <> 'IM'
     AND dpr.name NOT IN (SELECT LoginName FROM @ExcludedLogins);
-
 
 -- 3. Impersonate Permissions ('IM' Type)
 SELECT 
