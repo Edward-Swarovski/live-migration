@@ -5,7 +5,7 @@
 ----------------------------------------------------------------------------------
 /*
 Usage: 
-sqlcmd -SSQL07350,2500 -U sa_maint -i gen_grant_revoke_deny.sql  -o SQL07350_grant_revoke_deny.out -h -1 -W -P `cat sa_maint.pwd
+sqlcmd -SSQL07350,2500 -U sa_maint -i gen_grant_revoke_deny.sql  -o SQL07350_grant_revoke_deny.out -h -1 -W -P `cat sa_maint.pwd`
 */
 
 SET NOCOUNT ON;
