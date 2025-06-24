@@ -20,11 +20,16 @@ ALTER AVAILABILITY GROUP thinkfolio_nomura_ag REMOVE DATABASE [thinkfolio_nomura
 ALTER AVAILABILITY GROUP thinktransfer_nomura_ag REMOVE DATABASE [thinktransfer_nomura];
 EOF
 
-sqlcmd -S${MSSQL_SVRNAME},2500 -U sa_maint -i drop_pri_db_fr_ag.sql -o ${MSSQL_SVRNAME}_drop_pri_db_fr_ag.out -h -1 -W -P `cat sa_maint.pwd`
+sqlcmd -S${MSSQL_SVRNAME},2500 -U sa_maint -i drop_pri_db_fr_ag.sql -o ${MSSQL_SVRNAME}_remove_primary_db_from_ag.out -h -1 -W -P `cat sa_maint.pwd`
+
+if [ $? -ne 0 ]; then
+    echo "Error: SQLCMD failed on server ${MSSQL_SVRNAME}. Check the output file for details."
+    exit 2
+fi
 
 # Cleanup
 rm -f drop_pri_db_fr_ag.sql
 
 echo "Database drop primary database from AG completed on server ${MSSQL_SVRNAME}."
-echo "Check ${MSSQL_SVRNAME}_remove_primary_database_from_ag.out for results."
-cat ${MSSQL_SVRNAME}_drop_pri_db_fr_ag.out
+echo "Check ${MSSQL_SVRNAME}_remove_primary_db_from_ag.out for results."
+cat ${MSSQL_SVRNAME}_remove_primary_db_from_ag.out.out
