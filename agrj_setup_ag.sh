@@ -58,10 +58,6 @@ else
     echo "DEBUG: sqlcmd command would be executed here"
 fi
 
-#SECONDARY: ALTER AG with 10 seconds delay to allow full AG sync
-echo "${SEC_MSSQL_SVRNAME}: Sleeping 10 seconds before GRANT CREATE ANY DATABASE on secondary..."
-sleep 10
-
 cat << EOF > runIt.sql
 ALTER AVAILABILITY GROUP [${DBNAME}_ag] JOIN WITH (CLUSTER_TYPE = NONE);
 go
@@ -73,6 +69,11 @@ EOF
 echo "${SEC_MSSQL_SVRNAME}: Execute: ALTER AVAILABILITY GROUP [${DBNAME}_ag] JOIN WITH (CLUSTER_TYPE = NONE);"
 echo "${SEC_MSSQL_SVRNAME}: Execute: ALTER AVAILABILITY GROUP [${DBNAME}_ag] GRANT CREATE ANY DATABASE;"
 if [ ${DEBUG} -eq 0 ]; then
+    
+    #SECONDARY: ALTER AG with 10 seconds delay to allow full AG sync
+    echo "${SEC_MSSQL_SVRNAME}: Sleeping 10 seconds before GRANT CREATE ANY DATABASE on secondary..."
+    sleep 10
+
     sqlcmd -S${SEC_MSSQL_SVRNAME},2500 -U sa_maint -i runIt.sql -w9999 -h -1 -W -P `cat sa_maint.pwd` | tee runIt.out
 else
     echo "DEBUG: sqlcmd command would be executed here"
