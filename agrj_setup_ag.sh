@@ -17,7 +17,7 @@ DROP database [${DBNAME}];
 go
 EOF
 
-#SECONDARY: ALTER AG
+#SECONDARY: DROP AG
 echo "${SEC_MSSQL_SVRNAME}: Execute: DROP AVAILABILITY GROUP [${DBNAME}_ag];"
 echo "${SEC_MSSQL_SVRNAME}: Execute: DROP database [${DBNAME}];"
 if [ ${DEBUG} -eq 0 ]; then
