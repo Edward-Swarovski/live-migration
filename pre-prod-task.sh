@@ -1,12 +1,19 @@
-# Define server name variable
-MSSQL_SVRNAME="SQLP5384"
+#!/bin/bash
+
+# Check if server name is provided
+if [ -z "$1" ]; then
+    echo "Usage: $0 <MSSQL_SERVER_NAME>"
+    exit 1
+fi
+
+# Assign server name from first argument
+MSSQL_SVRNAME="$1"
 
 # Check if sa_maint.pwd file exists and has content
 if [ ! -s sa_maint.pwd ]; then
     echo "Error: Please put the sa_maint password into sa_maint.pwd file"
     exit 1
 fi
-
 
 echo "Starting SQL operations on server ${MSSQL_SVRNAME}..."
 
