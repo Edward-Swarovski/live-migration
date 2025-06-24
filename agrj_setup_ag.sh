@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define debug mode (hardcoded)
-DEBUG=1  # Set to 1 for debug mode, 0 for normal execution
+DEBUG=0  # Set to 1 for debug mode, 0 for normal execution
 
 # Check number of arguments
 if [ $# -ne 3 ]; then
