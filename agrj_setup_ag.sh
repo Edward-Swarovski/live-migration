@@ -10,6 +10,23 @@ if [ $# -ne 3 ]; then
     exit 1
 fi
 
+cat << EOF > runIt.sql
+DROP AVAILABILITY GROUP [${DBNAME}_ag];
+go
+DROP database [${DBNAME}];
+go
+EOF
+
+#SECONDARY: ALTER AG
+echo "${SEC_MSSQL_SVRNAME}: Execute: DROP AVAILABILITY GROUP [${DBNAME}_ag];"
+echo "${SEC_MSSQL_SVRNAME}: Execute: DROP database [${DBNAME}];"
+if [ ${DEBUG} -eq 0 ]; then
+    sqlcmd -S${SEC_MSSQL_SVRNAME},2500 -U sa_maint -i runIt.sql -w9999 -h -1 -W -P `cat sa_maint.pwd` | tee runIt.out
+else
+    echo "DEBUG: sqlcmd command would be executed here"
+fi
+
+
 # Define server name variable from input parameters
 PRI_MSSQL_SVRNAME="$1"
 SEC_MSSQL_SVRNAME="$2"
@@ -41,11 +58,19 @@ else
     echo "DEBUG: sqlcmd command would be executed here"
 fi
 
-#SECONDARY: ALTER AG with 1-minute delay to allow full AG sync
-echo "${SEC_MSSQL_SVRNAME}: Sleeping 60 seconds before GRANT CREATE ANY DATABASE on secondary..."
-sleep 60
+#SECONDARY: ALTER AG with 10 seconds delay to allow full AG sync
+echo "${SEC_MSSQL_SVRNAME}: Sleeping 10 seconds before GRANT CREATE ANY DATABASE on secondary..."
+sleep 10
+
+cat << EOF > runIt.sql
+ALTER AVAILABILITY GROUP [${DBNAME}_ag] JOIN WITH (CLUSTER_TYPE = NONE);
+go
+ALTER AVAILABILITY GROUP [${DBNAME}_ag] GRANT CREATE ANY DATABASE;
+go
+EOF
 
 #SECONDARY: ALTER AG
+echo "${SEC_MSSQL_SVRNAME}: Execute: ALTER AVAILABILITY GROUP [${DBNAME}_ag] JOIN WITH (CLUSTER_TYPE = NONE);"
 echo "${SEC_MSSQL_SVRNAME}: Execute: ALTER AVAILABILITY GROUP [${DBNAME}_ag] GRANT CREATE ANY DATABASE;"
 if [ ${DEBUG} -eq 0 ]; then
     sqlcmd -S${SEC_MSSQL_SVRNAME},2500 -U sa_maint -i runIt.sql -w9999 -h -1 -W -P `cat sa_maint.pwd` | tee runIt.out
