@@ -41,6 +41,10 @@ else
     echo "DEBUG: sqlcmd command would be executed here"
 fi
 
+#SECONDARY: ALTER AG with 1-minute delay to allow full AG sync
+echo "${SEC_MSSQL_SVRNAME}: Sleeping 60 seconds before GRANT CREATE ANY DATABASE on secondary..."
+sleep 60
+
 #SECONDARY: ALTER AG
 echo "${SEC_MSSQL_SVRNAME}: Execute: ALTER AVAILABILITY GROUP [${DBNAME}_ag] GRANT CREATE ANY DATABASE;"
 if [ ${DEBUG} -eq 0 ]; then
@@ -80,8 +84,6 @@ fi
 
 # Cleanup only if not in debug mode
 if [ ${DEBUG} -eq 0 ]; then
-    rm ${SEC_MSSQL_SVRNAME}.${DBNAME}_working.out
-    rm ${PRI_MSSQL_SVRNAME}.${DBNAME}_working.out
     rm runIt.sql
     rm runIt.out
 fi
@@ -90,4 +92,4 @@ echo "All AG setup completed on database ${DBNAME}."
 echo ""
 echo "Run the below command to check the AG Autoseeding status"
 echo ""
-echo "  ./agrj_autoseeding_status.sh ${PRI_MSSQL_SVRNAME} ${DBNAME}"
+echo "  ./agrj_chk_autoseeding_status.sh ${PRI_MSSQL_SVRNAME} ${DBNAME}"
