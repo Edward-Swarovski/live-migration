@@ -10,23 +10,6 @@ if [ $# -ne 3 ]; then
     exit 1
 fi
 
-cat << EOF > runIt.sql
-DROP AVAILABILITY GROUP [${DBNAME}_ag];
-go
-DROP database [${DBNAME}];
-go
-EOF
-
-#SECONDARY: DROP AG
-echo "${SEC_MSSQL_SVRNAME}: Execute: DROP AVAILABILITY GROUP [${DBNAME}_ag];"
-echo "${SEC_MSSQL_SVRNAME}: Execute: DROP database [${DBNAME}];"
-if [ ${DEBUG} -eq 0 ]; then
-    sqlcmd -S${SEC_MSSQL_SVRNAME},2500 -U sa_maint -i runIt.sql -w9999 -h -1 -W -P `cat sa_maint.pwd` | tee runIt.out
-else
-    echo "DEBUG: sqlcmd command would be executed here"
-fi
-
-
 # Define server name variable from input parameters
 PRI_MSSQL_SVRNAME="$1"
 SEC_MSSQL_SVRNAME="$2"
@@ -45,6 +28,23 @@ if [ ! -s sa_maint.pwd ]; then
     echo "Error: Please put the sa_maint password into sa_maint.pwd file"
     exit 1
 fi
+
+cat << EOF > runIt.sql
+DROP AVAILABILITY GROUP [${DBNAME}_ag];
+go
+DROP database [${DBNAME}];
+go
+EOF
+
+#SECONDARY: DROP AG
+echo "${SEC_MSSQL_SVRNAME}: Execute: DROP AVAILABILITY GROUP [${DBNAME}_ag];"
+echo "${SEC_MSSQL_SVRNAME}: Execute: DROP database [${DBNAME}];"
+if [ ${DEBUG} -eq 0 ]; then
+    sqlcmd -S${SEC_MSSQL_SVRNAME},2500 -U sa_maint -i runIt.sql -w9999 -h -1 -W -P `cat sa_maint.pwd` | tee runIt.out
+else
+    echo "DEBUG: sqlcmd command would be executed here"
+fi
+
 
 cat << EOF > runIt.sql
 ALTER AVAILABILITY GROUP [${DBNAME}_ag] GRANT CREATE ANY DATABASE;
