@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Define debug mode (hardcoded)
+# Define debug mode
 DEBUG=0  # Set to 1 for debug mode, 0 for normal execution
 
 # Check number of arguments
@@ -10,17 +10,17 @@ if [ $# -ne 3 ]; then
     exit 1
 fi
 
-# Define server name variable from input parameters
+# Define server name variables from input parameters
 PRI_MSSQL_SVRNAME="$1"
 SEC_MSSQL_SVRNAME="$2"
 DBNAME="$3"
 
 # Display input parameters
 echo "Parameters:"
-echo "Primary Server: ${PRI_MSSQL_SVRNAME}"
-echo "Secondary Server: ${SEC_MSSQL_SVRNAME}"
-echo "Database Name: ${DBNAME}"
-echo "Debug Mode: ${DEBUG}"
+echo "  Primary Server:   ${PRI_MSSQL_SVRNAME}"
+echo "  Secondary Server: ${SEC_MSSQL_SVRNAME}"
+echo "  Database Name:    ${DBNAME}"
+echo "  Debug Mode:       ${DEBUG}"
 echo ""
 
 # Check if sa_maint.pwd file exists and has content
@@ -29,55 +29,55 @@ if [ ! -s sa_maint.pwd ]; then
     exit 1
 fi
 
-cat << EOF > runIt.sql
+# Load password into variable
+SQL_PWD=$(< sa_maint.pwd)
+
+# Create SQL script for secondary: drop AG and DB
+cat << EOF > runIt_secondary.sql
 DROP AVAILABILITY GROUP [${DBNAME}_ag];
-go
-DROP database [${DBNAME}];
-go
+GO
+DROP DATABASE [${DBNAME}];
+GO
 EOF
 
-#SECONDARY: DROP AG
-echo "Drop Availability Group in Secondary"
-echo "Drop Database in Secondary"
-echo "${SEC_MSSQL_SVRNAME}: Execute: DROP AVAILABILITY GROUP [${DBNAME}_ag];"
-echo "${SEC_MSSQL_SVRNAME}: Execute: DROP database [${DBNAME}];"
+echo "[SECONDARY] Dropping Availability Group and Database..."
+echo "${SEC_MSSQL_SVRNAME}: DROP AG [${DBNAME}_ag] and DROP DATABASE [${DBNAME}]"
+
 if [ ${DEBUG} -eq 0 ]; then
-    sqlcmd -S${SEC_MSSQL_SVRNAME},2500 -U sa_maint -i runIt.sql -w9999 -h -1 -W -P `cat sa_maint.pwd` | tee runIt.out
+    sqlcmd -S${SEC_MSSQL_SVRNAME},2500 -U sa_maint -i runIt_secondary.sql -w9999 -h -1 -W -P "$SQL_PWD" | tee runIt_secondary.out
+    if [ $? -ne 0 ]; then
+        echo "Error: SQLCMD failed on server ${SEC_MSSQL_SVRNAME}."
+        echo "Exit with Error..."
+        exit 2
+    fi
 else
-    echo "DEBUG: sqlcmd command would be executed here"
+    echo "DEBUG: Skipping sqlcmd execution on secondary."
 fi
 
-if [ $? -ne 0 ]; then
-    echo "Error: SQLCMD failed on server ${SEC_MSSQL_SVRNAME}.
-    echo "Exit with Error..."
-    exit 2
-fi
-
-cat << EOF > runIt.sql
+# Create SQL script for primary: remove DB from AG
+cat << EOF > runIt_primary.sql
 ALTER AVAILABILITY GROUP [${DBNAME}_ag] REMOVE DATABASE [${DBNAME}];
 EOF
 
-#PRIMARY: ALTER AG
-echo "Remove ${DBNAME} from Availability Group in Primary"
-echo "${PRI_MSSQL_SVRNAME}: Execute: ALTER AVAILABILITY GROUP [${DBNAME}_ag] REMOVE [${DBNAME}];"
+echo "[PRIMARY] Removing ${DBNAME} from Availability Group..."
+echo "${PRI_MSSQL_SVRNAME}: ALTER AG [${DBNAME}_ag] REMOVE DATABASE [${DBNAME}]"
+
 if [ ${DEBUG} -eq 0 ]; then
-    sqlcmd -S${PRI_MSSQL_SVRNAME},2500 -U sa_maint -i runIt.sql -w9999 -h -1 -W -P `cat sa_maint.pwd` | tee runIt.out
+    sqlcmd -S${PRI_MSSQL_SVRNAME},2500 -U sa_maint -i runIt_primary.sql -w9999 -h -1 -W -P "$SQL_PWD" | tee runIt_primary.out
+    if [ $? -ne 0 ]; then
+        echo "Error: SQLCMD failed on server ${PRI_MSSQL_SVRNAME}."
+        echo "Exit with Error..."
+        exit 2
+    fi
 else
-    echo "DEBUG: sqlcmd command would be executed here"
+    echo "DEBUG: Skipping sqlcmd execution on primary."
 fi
 
-if [ $? -ne 0 ]; then
-    echo "Error: SQLCMD failed on server ${PRI_MSSQL_SVRNAME}.
-    echo "Exit with Error..."
-    exit 2
-fi
-
-# Cleanup only if not in debug mode
+# Cleanup
 if [ ${DEBUG} -eq 0 ]; then
-    rm runIt.sql
-    rm runIt.out
+    rm -f runIt_primary.sql runIt_secondary.sql runIt_primary.out runIt_secondary.out
 fi
 
 echo ""
 echo "Next Step:"
-echo "  Perform Database Restore in Primary with Replace"
+echo "  Perform Database Restore in Primary with REPLACE option."
