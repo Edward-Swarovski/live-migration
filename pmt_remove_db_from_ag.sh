@@ -33,7 +33,7 @@ fi
 SQL_PWD=$(< sa_maint.pwd)
 
 # Create SQL script for secondary: drop AG and DB
-cat << EOF > runIt_secondary.sql
+cat << EOF > runIt.sql
 DROP AVAILABILITY GROUP [${DBNAME}_ag];
 GO
 DROP DATABASE [${DBNAME}];
@@ -44,7 +44,7 @@ echo "[SECONDARY] Dropping Availability Group and Database..."
 echo "${SEC_MSSQL_SVRNAME}: DROP AG [${DBNAME}_ag] and DROP DATABASE [${DBNAME}]"
 
 if [ ${DEBUG} -eq 0 ]; then
-    sqlcmd -S${SEC_MSSQL_SVRNAME},2500 -U sa_maint -i runIt_secondary.sql -w9999 -h -1 -W -P "$SQL_PWD" | tee runIt_secondary.out
+    sqlcmd -S${SEC_MSSQL_SVRNAME},2500 -U sa_maint -i runIt.sql -w9999 -h -1 -W -P "$SQL_PWD" | tee runIt.out
     if [ $? -ne 0 ]; then
         echo "Error: SQLCMD failed on server ${SEC_MSSQL_SVRNAME}."
         echo "Exit with Error..."
@@ -55,7 +55,7 @@ else
 fi
 
 # Create SQL script for primary: remove DB from AG
-cat << EOF > runIt_primary.sql
+cat << EOF > runIt.sql
 ALTER AVAILABILITY GROUP [${DBNAME}_ag] REMOVE DATABASE [${DBNAME}];
 EOF
 
@@ -63,7 +63,7 @@ echo "[PRIMARY] Removing ${DBNAME} from Availability Group..."
 echo "${PRI_MSSQL_SVRNAME}: ALTER AG [${DBNAME}_ag] REMOVE DATABASE [${DBNAME}]"
 
 if [ ${DEBUG} -eq 0 ]; then
-    sqlcmd -S${PRI_MSSQL_SVRNAME},2500 -U sa_maint -i runIt_primary.sql -w9999 -h -1 -W -P "$SQL_PWD" | tee runIt_primary.out
+    sqlcmd -S${PRI_MSSQL_SVRNAME},2500 -U sa_maint -i runIt.sql -w9999 -h -1 -W -P "$SQL_PWD" | tee runIt.out
     if [ $? -ne 0 ]; then
         echo "Error: SQLCMD failed on server ${PRI_MSSQL_SVRNAME}."
         echo "Exit with Error..."
@@ -75,7 +75,7 @@ fi
 
 # Cleanup
 if [ ${DEBUG} -eq 0 ]; then
-    rm -f runIt_primary.sql runIt_secondary.sql runIt_primary.out runIt_secondary.out
+    rm -f runIt.sql runIt.out
 fi
 
 echo ""
