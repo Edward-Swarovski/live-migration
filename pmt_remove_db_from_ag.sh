@@ -52,6 +52,9 @@ if [ ${DEBUG} -eq 0 ]; then
     fi
 else
     echo "DEBUG: Skipping sqlcmd execution on secondary."
+    echo "--- runIt.sql content (Secondary) ---"
+    cat runIt.sql
+    echo "------------------------------------"
 fi
 
 # Create SQL script for primary: remove DB from AG
@@ -71,6 +74,9 @@ if [ ${DEBUG} -eq 0 ]; then
     fi
 else
     echo "DEBUG: Skipping sqlcmd execution on primary."
+    echo "--- runIt.sql content (Primary) ---"
+    cat runIt.sql
+    echo "-----------------------------------"
 fi
 
 # Cleanup
