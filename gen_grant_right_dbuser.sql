@@ -4,7 +4,8 @@ DECLARE @dbName NVARCHAR(256);
 
 DECLARE perm_cursor CURSOR FOR
 SELECT name FROM sys.databases
-WHERE database_id > 4 AND state_desc = 'ONLINE'; -- Exclude system DBs
+WHERE database_id > 4 AND state_desc = 'ONLINE'
+  AND name NOT IN ('SSISDB', 'ReportServer', 'ReportServerTempDB'); -- Exclude system DBs
 
 OPEN perm_cursor;
 FETCH NEXT FROM perm_cursor INTO @dbName;
