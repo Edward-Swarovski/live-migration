@@ -29,4 +29,5 @@ SQL_PWD=$(< sa_maint.pwd)
 
 # Run sqlcmd
 echo "Executing $SQLFILE on server $SERVERNAME..."
+echo "ALTER DATABASE ... MODIFY FILE ... AUTOGROWTH..."
 sqlcmd -S${SERVERNAME},2500 -U sa_maint -i "$SQLFILE" -w9999 -h -1 -W -P "$SQL_PWD" | tee "$OUTFILE"
