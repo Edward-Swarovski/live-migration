@@ -1,10 +1,9 @@
-
 ----------------------------------------------------------------------------------
 -- Enhanced Script: Generate Server Role Membership Scripts
 -- Purpose: Re-grant server role memberships with version-safe logic and exclusions
 ----------------------------------------------------------------------------------
 /*
-Usage: 
+Usage:
 sqlcmd -SSQL07350,2500 -U sa_maint -i gen_srv_roles_membership.sql  -o SQL07350_srv_roles_membership.out -h -1 -W -P `cat sa_maint.pwd`
 */
 SET NOCOUNT ON;
@@ -13,9 +12,10 @@ GO
 -- 1. Define Exclusion List for Login Names
 DECLARE @ExcludedLogins TABLE (LoginName SYSNAME);
 INSERT INTO @ExcludedLogins(LoginName)
-VALUES 
+VALUES
     ('##MS_PolicyEventProcessingLogin##'),
     ('##MS_PolicyTsqlExecutionLogin##'),
+    ('##MS_SSISServerCleanupJobLogin##'),
     ('a2pdba'),
     ('a2psysro'),
     ('BUILTIN\Administrators'),
@@ -48,7 +48,7 @@ VALUES
 ----------------------------------------------------------------------------------
 IF (CAST(CONVERT(VARCHAR(4), SERVERPROPERTY('ProductVersion')) AS FLOAT) > 9)
 BEGIN
-    SELECT 
+    SELECT
         'BEGIN TRY ALTER SERVER ROLE [' + Rle.name + '] ADD MEMBER [' + mbr.name + ']; ' +
         'END TRY BEGIN CATCH PRINT ''*Warning: unable to add [' + mbr.name + '] to role [' + Rle.name + '] '' + ERROR_MESSAGE(); END CATCH' AS RoleScript
     FROM sys.server_role_members AS rm
@@ -60,7 +60,7 @@ BEGIN
 END
 ELSE
 BEGIN
-    SELECT 
+    SELECT
         'BEGIN TRY EXEC sp_addrolemember @rolename = ' + QUOTENAME(Rle.name, '''') +
         ', @membername = ' + QUOTENAME(mbr.name, '''') + '; ' +
         'END TRY BEGIN CATCH PRINT ''*Warning: unable to add [' + mbr.name + '] to role [' + Rle.name + '] '' + ERROR_MESSAGE(); END CATCH' AS RoleScript
