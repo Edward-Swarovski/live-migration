@@ -8,7 +8,7 @@ fi
 
 SERVERNAME="$1"
 DBNAME="$2"
-SQLFILE="${SERVERNAME}_${DBNAME}_restoredb.sql"
+SQLFILE="${SERVERNAME}_${DBNAME}_dbrestore.sql"
 
 # Check for sa_maint.pwd
 if [ ! -s sa_maint.pwd ]; then
