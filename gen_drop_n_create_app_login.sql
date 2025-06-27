@@ -1,4 +1,4 @@
-USE master;
+SET NOCOUNT ON;
 GO
 
 -- Create temp table to store all desired login details
@@ -16,7 +16,7 @@ CREATE TABLE #Logins (
 
 -- Insert SQL-authenticated logins
 INSERT INTO #Logins (LoginName, SID, TypeDesc, PasswordHash, DefaultDatabase, IsDisabled)
-SELECT 
+SELECT
     name,
     sid,
     type_desc,
@@ -27,6 +27,7 @@ FROM sys.sql_logins
 WHERE name NOT IN (
     '##MS_PolicyEventProcessingLogin##',
     '##MS_PolicyTsqlExecutionLogin##',
+    '##MS_SSISServerCleanupJobLogin##',
     'a2pdba',
     'a2psysro',
     'BUILTIN\Administrators',
@@ -57,7 +58,7 @@ WHERE name NOT IN (
 
 -- Insert Windows-authenticated logins
 INSERT INTO #Logins (LoginName, SID, TypeDesc, PasswordHash, DefaultDatabase, IsDisabled)
-SELECT 
+SELECT
     name,
     sid,
     type_desc,
@@ -98,16 +99,16 @@ AND name NOT IN (
 );
 
 -- Generate drop and recreate login statements
-SELECT 
+SELECT
     'BEGIN TRY ' +
         'BEGIN TRY DROP LOGIN [' + LoginName + ']; END TRY BEGIN CATCH PRINT ''Login [' + LoginName + '] did not exist, skipping drop.''; END CATCH ' +
-        CASE 
-            WHEN TypeDesc = 'SQL_LOGIN' THEN 
+        CASE
+            WHEN TypeDesc = 'SQL_LOGIN' THEN
                 'CREATE LOGIN [' + LoginName + '] ' +
                 'WITH PASSWORD = ' + CONVERT(VARCHAR(MAX), PasswordHash, 1) + ' HASHED, ' +
-                'SID = ' + CONVERT(VARCHAR(MAX), SID, 1) + 
+                'SID = ' + CONVERT(VARCHAR(MAX), SID, 1) +
                 ISNULL(', DEFAULT_DATABASE = [' + DefaultDatabase + ']', '') + ', CHECK_POLICY = OFF; '
-            WHEN TypeDesc = 'WINDOWS_LOGIN' THEN 
+            WHEN TypeDesc = 'WINDOWS_LOGIN' THEN
                 'CREATE LOGIN [' + LoginName + '] FROM WINDOWS WITH SID = ' + CONVERT(VARCHAR(MAX), SID, 1) + '; '
             ELSE '-- Skipped unsupported type: ' + TypeDesc
         END +
