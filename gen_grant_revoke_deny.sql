@@ -1,10 +1,9 @@
-
 ----------------------------------------------------------------------------------
 -- Enhanced Script: Generate Server-Level Permissions (Roles, Securables, Status)
 -- Purpose: Generate GRANT, DENY, REVOKE for server logins including impersonation
 ----------------------------------------------------------------------------------
 /*
-Usage: 
+Usage:
 sqlcmd -SSQL07350,2500 -U sa_maint -i gen_grant_revoke_deny.sql  -o SQL07350_grant_revoke_deny.out -h -1 -W -P `cat sa_maint.pwd`
 */
 
@@ -14,10 +13,11 @@ GO
 -- 1. Exclusion List (Customize Here)
 DECLARE @ExcludedLogins TABLE (LoginName SYSNAME);
 INSERT INTO @ExcludedLogins(LoginName)
-VALUES 
+VALUES
 
     ('##MS_PolicyEventProcessingLogin##'),
     ('##MS_PolicyTsqlExecutionLogin##'),
+    ('##MS_SSISServerCleanupJobLogin##'),
     ('a2pdba'),
     ('a2psysro'),
     ('BUILTIN\Administrators'),
@@ -47,19 +47,19 @@ VALUES
 
 -- 2. General Server Permissions (excluding 'IM')
 
-SELECT 
-    'BEGIN TRY ' + 
-    CASE 
-        WHEN dp.state_desc = 'GRANT_WITH_GRANT_OPTION' THEN 
-            'GRANT ' + dp.permission_name COLLATE DATABASE_DEFAULT + 
-            CASE 
+SELECT
+    'BEGIN TRY ' +
+    CASE
+        WHEN dp.state_desc = 'GRANT_WITH_GRANT_OPTION' THEN
+            'GRANT ' + dp.permission_name COLLATE DATABASE_DEFAULT +
+            CASE
                 WHEN dp.class_desc = 'SERVER' THEN ' TO [' + dpr.name + '] WITH GRANT OPTION'
                 WHEN dp.class_desc = 'ENDPOINT' THEN ' ON ENDPOINT::[' + ep.name + '] TO [' + dpr.name + '] WITH GRANT OPTION'
                 ELSE ' -- Unsupported class: ' + dp.class_desc
             END
-        ELSE 
-            dp.state_desc + ' ' + dp.permission_name COLLATE DATABASE_DEFAULT + 
-            CASE 
+        ELSE
+            dp.state_desc + ' ' + dp.permission_name COLLATE DATABASE_DEFAULT +
+            CASE
                 WHEN dp.class_desc = 'SERVER' THEN ' TO [' + dpr.name + ']'
                 WHEN dp.class_desc = 'ENDPOINT' THEN ' ON ENDPOINT::[' + ep.name + '] TO [' + dpr.name + ']'
                 ELSE ' -- Unsupported class: ' + dp.class_desc
@@ -77,8 +77,8 @@ WHERE dp.[type] IS NOT NULL
 --    AND dpr.name NOT LIKE 'EUROPE\sys-MS%';
 
 -- 3. Impersonate Permissions ('IM' Type)
-SELECT 
-    'BEGIN TRY ' + perms.state_desc + ' ' + perms.permission_name COLLATE DATABASE_DEFAULT + 
+SELECT
+    'BEGIN TRY ' + perms.state_desc + ' ' + perms.permission_name COLLATE DATABASE_DEFAULT +
     ' ON LOGIN::[' + grantor.name + '] TO [' + grantee.name + ']; ' +
     'END TRY BEGIN CATCH PRINT ''*Warning: unable to ' + perms.state_desc + ' ' +
     perms.permission_name COLLATE DATABASE_DEFAULT + ' ON LOGIN::[' + grantor.name + '] to [' + grantee.name + '] '' + ERROR_MESSAGE(); END CATCH'
