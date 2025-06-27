@@ -35,6 +35,10 @@ SET @Sep = CASE
              ELSE '/' 
            END;
 
+-- Append BACKUPS folder for Windows-style path
+IF CHARINDEX(':', @BackupPath) > 0
+    SET @BackupPath = @BackupPath + @Sep + 'BACKUPS';
+
 SELECT 
     @LogicalDataName = mf.name,
     @MdfFile         = mf.physical_name
