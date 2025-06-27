@@ -10,7 +10,7 @@ fi
 # Input parameters
 SERVERNAME="$1"
 DBNAME="$2"
-SQLFILE="${SERVERNAME}_${DBNAME}.sql"
+SQLFILE="${SERVERNAME}_${DBNAME}_dbrestore.sql"
 
 # Check if sa_maint.pwd exists
 if [ ! -s sa_maint.pwd ]; then
